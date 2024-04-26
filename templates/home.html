@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h2>Welcome, {{ username }}!</h2>
+    <p>This is the home page.</p>
+    <div>
+        <script>
+            function logout() {   
+                document.cookie = 'username=; Max-Age=-99999999;';
+                window.location.href = "/";
+            }
+        </script>
+        <a href="javascript:logout();">Logout</a>
+    </div>
+</body>
+</html>

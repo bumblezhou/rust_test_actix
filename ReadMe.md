@@ -1,0 +1,1 @@
+# A simple web app to demostrate how to use rust and actix
