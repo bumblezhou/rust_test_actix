@@ -1,5 +1,6 @@
 use actix_web::{cookie::Cookie, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use askama::Template;
+use actix_files::Files;
 
 #[derive(Template)]
 #[template(path = "login.html")]
@@ -71,6 +72,14 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(home))
             .route("/login", web::get().to(login_get))
             .route("/login", web::post().to(login_post))
+            // Serve CSS files
+            .service(Files::new("/css", "static/css"))
+            // Serve JavaScript files
+            .service(Files::new("/js", "static/js"))
+            // Serve image files
+            .service(Files::new("/img", "static/img"))
+            // Serve font files
+            .service(Files::new("/font", "static/font"))
     })
     .bind("127.0.0.1:8080")?
     .run()

@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="shortcut icon" href="/img/favicon.ico">
 </head>
-<body>
+<body onload="javascript: page_load();">
     <h2>Login</h2>
     <form id="loginForm" action="#" method="post">
         <label for="username">Username:</label>
@@ -14,38 +16,7 @@
         <input type="password" id="password" name="password"><br><br>
         <input type="submit" value="Login">
     </form>
-
     <div id="message"></div>
-
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            // Get form data
-            const formData = new FormData(this);
-            
-            // Convert FormData to URL-encoded string
-            const urlEncodedFormData = new URLSearchParams(formData).toString();
-
-            // Send form data to server using AJAX
-            fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded' // Set content type header
-                },
-                body: urlEncodedFormData
-            })
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('message').innerText = data;
-                if (data == "Authenticated") {
-                    window.location.href = "/";
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    </script>
+    <script src="/js/home.js"></script>
 </body>
 </html>

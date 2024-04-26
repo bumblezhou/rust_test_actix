@@ -1,0 +1,35 @@
+@font-face {
+    font-family: 'dancing_scriptbold';
+    src: url('../font/dancingscript-bold-webfont.woff') format('woff'),
+    url('../font/dancingscript-bold-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'dancing_scriptregular';
+    src: url('../font/dancingscript-regular-webfont.woff') format('woff'),
+    url('../font/dancingscript-regular-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+div {
+    border: 0; width: 100%; padding: 0; margin: 0;
+}
+
+.dot{
+    width:35px;
+    height:35px;
+    position:absolute;
+    background: url('../img/red-lobed-fall-clipart-leaf.png');
+    background-size: 100% 100%;
+}
+body{
+    background-color: #eee;
+    color:#111;
+    overflow:hidden;
+}
+body, #container{
+    width: 100%; height: 100%;
+}
