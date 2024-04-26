@@ -45,9 +45,18 @@ async fn login_post(form: web::Form<FormParams>) -> impl Responder {
 
 async fn home(req: HttpRequest) -> impl Responder {
     if let Some(username_cookie) = req.cookie("username") {
-        let home_temp = HomeTemplate { username: username_cookie.value().to_owned() };
-        let rendered = home_temp.render().unwrap();
-        return HttpResponse::Ok().body(rendered);
+        let is_valid_user = USERS.iter().any(|&(user, _pass)| {
+            username_cookie.value().to_owned() == user
+        });
+        if is_valid_user {
+            let home_temp = HomeTemplate { username: username_cookie.value().to_owned() };
+            let rendered = home_temp.render().unwrap();
+            return HttpResponse::Ok().body(rendered);
+        } else {
+            return HttpResponse::Found()
+                .append_header(("Location", "/login"))
+                .finish();
+        }
     } else {
         return HttpResponse::Found()
             .append_header(("Location", "/login"))
