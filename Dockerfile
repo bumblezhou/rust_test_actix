@@ -5,8 +5,8 @@ WORKDIR /app
 COPY . .
 
 # Set proxy environment variables
-ENV http_proxy=http://your_proxy_server:proxy_port
-ENV https_proxy=http://your_proxy_server:proxy_port
+# ENV http_proxy=http://your_proxy_server:proxy_port
+# ENV https_proxy=http://your_proxy_server:proxy_port
 
 RUN cargo build --release
 
