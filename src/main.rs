@@ -1,7 +1,11 @@
-use actix_web::{cookie::Cookie, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
+use actix_web::{cookie::Cookie, web, Error, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use askama::Template;
 use actix_files::Files;
 use local_ip_address::local_ip;
+
+mod websocket;
+use websocket::WebSocketActor;
+use actix_web_actors::ws;
 
 #[derive(Template)]
 #[template(path = "login.html")]
@@ -73,6 +77,11 @@ async fn home(req: HttpRequest) -> impl Responder {
     }
 }
 
+async fn ws_index(r: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
+    let res = ws::start(WebSocketActor {}, &r, stream);
+    res
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
@@ -88,6 +97,8 @@ async fn main() -> std::io::Result<()> {
             .service(Files::new("/img", "static/img"))
             // Serve font files
             .service(Files::new("/font", "static/font"))
+            // WebSocket route
+            .route("/ws/", web::get().to(ws_index))
     })
     .bind("0.0.0.0:8080")?
     .run()

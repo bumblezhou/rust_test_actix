@@ -1,4 +1,4 @@
-function page_load() {
+function init_login() {
     document.getElementById('loginForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
         // Get form data
@@ -27,4 +27,34 @@ function page_load() {
 function logout() {   
     document.cookie = 'username=; Max-Age=-99999999;';
     window.location.href = "/";
+}
+
+let socket = undefined;
+function init_websocket() {
+    socket = new WebSocket("ws://localhost:8080/ws/");
+    socket.onopen = function(e) {
+        console.log("WebSocket connection established.");
+    };
+
+    socket.onmessage = function(event) {
+        console.log("Message received:", event.data);
+        // Handle the incoming message, e.g., display it on the webpage
+        document.getElementById("msg_list").innerHTML += '<span>' + event.data + '</span><br />';
+    };
+
+    socket.onclose = function(event) {
+        console.log("WebSocket connection closed.");
+    };
+}
+
+function send_websocket_msg () {
+    if (socket) {
+        let message = document.getElementById("text").value;
+        if (socket.readyState === WebSocket.OPEN) {
+            socket.send(message);
+            console.log("Message sent:", message);
+        } else {
+            console.error("WebSocket connection is not open.");
+        }
+    }
 }

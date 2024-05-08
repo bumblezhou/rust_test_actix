@@ -6,13 +6,20 @@
     <title>Home</title>
     <link rel="stylesheet" href="/css/default.css">
     <link rel="shortcut icon" href="/img/favicon.ico">
+    <script src="/js/home.js"></script>
 </head>
-<body>
+<body onload="javascript:init_websocket();">
     <h2>From server: {{ server_ip }}!</h2>
     <h2>Welcome, {{ username }}!</h2>
     <p>This is the home page.</p>
     <div>
-        <script src="/js/home.js"></script>
+        <span>Message to send:</span>
+        <input id="text" type="text" style="width: 200px;" value="Hello, buddy!">
+        <input id="btn_send" type="button" value="Send" style="width: 60px;" onclick="javascript: send_websocket_msg();" />
+        <br />
+        <br />
+        <div>Message received:</div>
+        <div id="msg_list" style="color:chocolate;"></div>
         <a href="javascript:logout();">Logout</a>
     </div>
 </body>
