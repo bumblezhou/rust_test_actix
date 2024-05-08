@@ -1,14 +1,18 @@
 use actix_web::{cookie::Cookie, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use askama::Template;
 use actix_files::Files;
+use local_ip_address::local_ip;
 
 #[derive(Template)]
 #[template(path = "login.html")]
-struct LoginTemplate;
+struct LoginTemplate {
+    server_ip: String,
+}
 
 #[derive(Template)]
 #[template(path = "home.html")]
 struct HomeTemplate {
+    server_ip: String,
     username: String,
 }
 
@@ -22,8 +26,11 @@ pub struct FormParams {
 }
 
 async fn login_get() -> impl Responder {
-    let login_temp = LoginTemplate.render().unwrap();
-    HttpResponse::Ok().body(login_temp)
+    let my_local_ip = local_ip().unwrap();
+    let login_temp = LoginTemplate { server_ip: my_local_ip.to_string() };
+    let rendered = login_temp.render().unwrap();
+
+    HttpResponse::Ok().body(rendered)
 }
 
 async fn login_post(form: web::Form<FormParams>) -> impl Responder {
@@ -50,7 +57,8 @@ async fn home(req: HttpRequest) -> impl Responder {
             username_cookie.value().to_owned() == user
         });
         if is_valid_user {
-            let home_temp = HomeTemplate { username: username_cookie.value().to_owned() };
+            let my_local_ip = local_ip().unwrap();
+            let home_temp = HomeTemplate { server_ip: my_local_ip.to_string(), username: username_cookie.value().to_owned() };
             let rendered = home_temp.render().unwrap();
             return HttpResponse::Ok().body(rendered);
         } else {
