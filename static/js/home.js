@@ -24,11 +24,6 @@ function init_login() {
     });
 }
 
-function logout() {   
-    document.cookie = 'username=; Max-Age=-99999999;';
-    window.location.href = "/";
-}
-
 let socket = undefined;
 function init_websocket() {
     socket = new WebSocket("ws://localhost:8080/ws/");
