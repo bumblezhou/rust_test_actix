@@ -132,7 +132,7 @@ async fn main() -> std::io::Result<()> {
             .route("/ws/", web::get().to(ws_index))
             .wrap(IdentityMiddleware::default())
             .wrap(SessionMiddleware::builder(CookieSessionStore::default(), secret_key.clone())
-                .cookie_name("username".to_owned())
+                .cookie_name("user".to_owned())
                 .cookie_secure(false)
                 .session_lifecycle(PersistentSession::default().session_ttl(THIRTY_MINUTES))
                 .build(),
