@@ -26,11 +26,13 @@
     <hr />
     <div>
         <h2>File uploading:</h2>
-        <form target="/" method="post" enctype="multipart/form-data">
-            <input type="file" multiple name="file"/>
-            <!-- <button type="button" onclick="javascript: upload_files();">Upload</button> -->
+        <form id="upload_form" target="/" method="post" enctype="multipart/form-data">
+            <input type="file" multiple name="file" />
             <input type="submit" value="Upload">
         </form>
+        <script>
+            init_upload_form();
+        </script>
         <div id="upload_result" style="color:chocolate;"></div>
         <br />
     </div>

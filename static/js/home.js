@@ -54,25 +54,31 @@ function send_websocket_msg () {
     }
 }
 
-function upload_files() {
-    // Get form data
-    const formData = new FormData();
-    var files = document.getElementById("fileInput").files;
-    for(var i = 0; i < files.length; i++) {
-        formData.append(files[i].name, files[i]);
-    }
-
-    // Send form data to server using AJAX
-    fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'multipart/form-data' },
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        document.getElementById("upload_result").innerText = data;
-    })
-    .catch(error => {
-        console.error('Error:', error);
+function init_upload_form() {
+    document.getElementById('upload_form').addEventListener('submit', function(event) {
+        // Prevent the default form submission behavior
+        event.preventDefault();
+    
+        // Optionally, you can perform additional actions here, such as form validation
+    
+        // Finally, you can submit the form data via AJAX or perform other actions as needed
+        var formData = new FormData(this);
+    
+        fetch(this.action, {
+            method: this.method,
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Form submitted successfully');
+                document.getElementById("upload_result").innerText = 'Form submitted successfully';
+                document.getElementsByName('file')[0].value = '';
+            } else {
+                console.error('Failed to submit form');
+            }
+        })
+        .catch(error => {
+            console.error('Failed to submit form:', error);
+        });
     });
 }
