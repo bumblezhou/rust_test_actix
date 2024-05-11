@@ -11,8 +11,9 @@
 <body onload="javascript:init_websocket();">
     <h2>From server: {{ server_ip }}!</h2>
     <h2>Welcome, {{ username }}!</h2>
-    <p>This is the home page.</p>
+    <hr />
     <div>
+        <h2>Message sending and receiving:</h2>
         <span>Message to send:</span>
         <input id="text" type="text" style="width: 200px;" value="Hello, buddy!">
         <input id="btn_send" type="button" value="Send" style="width: 60px;" onclick="javascript: send_websocket_msg();" />
@@ -20,6 +21,21 @@
         <br />
         <div>Message received:</div>
         <div id="msg_list" style="color:chocolate;"></div>
+        <br />
+    </div>
+    <hr />
+    <div>
+        <h2>File uploading:</h2>
+        <form target="/" method="post" enctype="multipart/form-data">
+            <input type="file" multiple name="file"/>
+            <!-- <button type="button" onclick="javascript: upload_files();">Upload</button> -->
+            <input type="submit" value="Upload">
+        </form>
+        <div id="upload_result" style="color:chocolate;"></div>
+        <br />
+    </div>
+    <hr />
+    <div>
         <a href="/logout">Logout</a>
     </div>
 </body>

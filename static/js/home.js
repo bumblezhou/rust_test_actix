@@ -53,3 +53,26 @@ function send_websocket_msg () {
         }
     }
 }
+
+function upload_files() {
+    // Get form data
+    const formData = new FormData();
+    var files = document.getElementById("fileInput").files;
+    for(var i = 0; i < files.length; i++) {
+        formData.append(files[i].name, files[i]);
+    }
+
+    // Send form data to server using AJAX
+    fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'multipart/form-data' },
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById("upload_result").innerText = data;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}

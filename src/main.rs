@@ -5,6 +5,8 @@ use askama::Template;
 use actix_files::Files;
 use local_ip_address::local_ip;
 use base64::prelude::*;
+use actix_multipart::{form::{tempfile::{TempFile}, MultipartForm}};
+use actix_web::web::Data;
 
 const THIRTY_MINUTES: Duration = Duration::minutes(30);
 
@@ -32,6 +34,12 @@ static USERS: &[(&str, &str)] = &[("user1", "password1"), ("user2", "password2")
 pub struct FormParams {
     username: String,
     password: String,
+}
+
+#[derive(Debug, MultipartForm)]
+struct UploadForm {
+    #[multipart(rename = "file")]
+    files: Vec<TempFile>
 }
 
 async fn login_get() -> impl Responder {
@@ -85,6 +93,16 @@ async fn home(_req: HttpRequest, identity: Option<Identity>) -> impl Responder {
     }
 }
 
+async fn save_files(MultipartForm(form): MultipartForm<UploadForm>) -> impl Responder {
+    println!("save_files...");
+    for f in form.files {
+        let path = format!("./tmp/{}", f.file_name.unwrap());
+        println!("Save to path: {}", &path);
+        f.file.persist(path).unwrap();
+    }
+    HttpResponse::Ok().body("Upload Successfully")
+}
+
 async fn ws_index(r: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
     let res = ws::start(WebSocketActor {}, &r, stream);
     res
@@ -114,9 +132,14 @@ async fn main() -> std::io::Result<()> {
     let decoded = BASE64_STANDARD.decode(&private_key_base64);
     let secret_key = Key::from(&decoded.unwrap());
 
+    std::fs::create_dir_all("./tmp")?;
+
     HttpServer::new(move || {
         App::new()
+            .app_data(Data::new(1024 * 1024 * 50)) // Set payload size limit to 50 MB
+            // .data(web::PayloadConfig::new(1024 * 1024 * 50)) // Set payload size limit to 50 MB
             .route("/", web::get().to(home))
+            .route("/", web::post().to(save_files))
             .route("/login", web::get().to(login_get))
             .route("/login", web::post().to(login_post))
             .route("/logout", web::get().to(logout))
