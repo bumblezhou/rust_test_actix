@@ -7,6 +7,7 @@ use local_ip_address::local_ip;
 use base64::prelude::*;
 use actix_multipart::{form::{tempfile::{TempFile}, MultipartForm}};
 use actix_web::web::Data;
+use actix_web::http::header::ContentType;
 
 const THIRTY_MINUTES: Duration = Duration::minutes(30);
 
@@ -103,6 +104,12 @@ async fn save_files(MultipartForm(form): MultipartForm<UploadForm>) -> impl Resp
     HttpResponse::Ok().body("Upload Successfully")
 }
 
+async fn chat() -> impl Responder {
+    HttpResponse::Ok()
+        .content_type(ContentType::plaintext())
+        .body(include_str!("../chat/index.html"))
+}
+
 async fn ws_index(r: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
     let res = ws::start(WebSocketActor {}, &r, stream);
     res
@@ -140,6 +147,7 @@ async fn main() -> std::io::Result<()> {
             // .data(web::PayloadConfig::new(1024 * 1024 * 50)) // Set payload size limit to 50 MB
             .route("/", web::get().to(home))
             .route("/", web::post().to(save_files))
+            .route("/chat", web::post().to(chat))
             .route("/login", web::get().to(login_get))
             .route("/login", web::post().to(login_post))
             .route("/logout", web::get().to(logout))
@@ -151,6 +159,8 @@ async fn main() -> std::io::Result<()> {
             .service(Files::new("/img", "static/img"))
             // Serve font files
             .service(Files::new("/font", "static/font"))
+            // Serve Chat files
+            .service(Files::new("/pkg", "chat/pkg"))
             // WebSocket route
             .route("/ws/", web::get().to(ws_index))
             .wrap(IdentityMiddleware::default())
